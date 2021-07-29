@@ -17,8 +17,11 @@ addpath(genpath('\\phhydra\data-new\phkinnerets\Lab\CODE\Hydra\'));
 % original movie), so if one decides to move them all into the same
 % directory by mistake, the latest will run over the others.
 %% 
-% carefully change those 2 directories below.
+% carefully change the 2 directories below:
 check = input('If you didnt change the directories below, please press 0 and do so. If you did change them according to your needs, please press 1: ');
+
+baseDir =  ['Z:\Analysis\users\Yonit\Movie_Analysis\Labeled_cells\SD1_2021_05_06_pos9\Cells\CARE_ensemble\CARE_output\SS_model_sigma']; % Directories of current segmentation images
+NewBaseDir =  ['Z:\Analysis\users\Yonit\Movie_Analysis\Labeled_cells\SD1_2021_05_06_pos9\Cells\CARE_ensemble\EPySegRaw\']; % New directory for segmentation images
 % Sigma values (or sub-names of folders) for different folders containing the
 % segmentation output that you would like to run over.
 sigmaVals = {'2_0','2_1','2_2','2_3','2_4','2_5','2_6','2_7','2_8','2_9','3_0'};
@@ -32,12 +35,11 @@ planes = [1:7];
 %% Run over folders, move and rename segmentation images.
 if check == 0, disp('***Running session was stopped***'); return, end
 parfor k=1:length(sigmaVals)
-    baseDir =  ['Z:\Analysis\users\Yonit\Movie_Analysis\Labeled_cells\SD1_2021_05_06_pos9\Cells\CARE_ensemble\CARE_output\SS_model_sigma',sigmaVals{k},'\'];
-    NewBaseDir =  ['Z:\Analysis\users\Yonit\Movie_Analysis\Labeled_cells\SD1_2021_05_06_pos9\Cells\CARE_ensemble\EPySegRaw\'];
+    thisBaseDir =  [baseDir,sigmaVals{k},'\'];
     subDirName = 'EPySegRaw';
     myResultsDir = ['SS_model_sigma',sigmaVals{k},'_EPySegRaw']; 
 
-        OrigImDir = baseDir;
+        OrigImDir = thisBaseDir;
         cd(OrigImDir);
         DirList = dir();
 

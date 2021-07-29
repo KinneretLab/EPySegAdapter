@@ -24,7 +24,7 @@ function [] = ensembleImages (mode, dirToImages,topDir, resultDir)
     allDirs =       ls;
     allDirs =       allDirs(allDirs(:,1) ~= '.',:);
     
-    mkdir([topDir,'\compData\ensembles\' ,resultDir]);
+    mkdir([topDir,'\ensembles\' ,resultDir]);
     for imgind = 1:length(imgsNames) % each image
         cd(dirToImages);
         img =               imgsNames{imgind};
