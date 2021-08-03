@@ -1,0 +1,55 @@
+# the main directory where we expect to find folders containing the input images
+# and in there we also expect to write a directory containing the results.
+# this does not have a default value, and must be set by you.
+# If left empty, an error will be thrown.
+# you should probably change this!
+work_dir: Z:/Analysis/users/Yonit/Movie_Analysis/Labeled_cells/SD1_2021_05_06_pos9/Cells
+
+# a condition that indicates whether or not we are generating the ensemble or the final segmentation.
+# set to True if you are running the final segmentation to get the geometry
+# set to False if you are running the code to generate the ensemble
+# this will be changed often.
+refined_mode: True
+
+# the pre-trained model to use on the data. Another option is 'Linknet-vgg16-sigmoid'
+# additional documentation available on `epyseg.deeplearning.deepl.EZDeepLearning.pretrained_models_2D_epithelia`
+pretraining_model: Linknet-vgg16-sigmoid-v2
+
+# relative path from work directory where the input (the general output folder of CARE) may be found.
+# this is relative to the work directory.
+input_folder: CARE_ensemble/CARE_output
+
+# whether or not to use the parent directory directly or a specific output folder ({input_folder}/predict)
+# official documentation:
+# stores as handCorrection.tif in the folder with the same name as the parent file without ext
+ta_output_mode: True
+
+# segmentation specific parameters, that configure the size and step of the segmentation frame.
+# Should stay relatively untouched.
+tile_width: 256
+tile_height: 256
+tile_overlap: 32
+
+# additional arguments you wish to feed into EPySeg directly.
+# these arguments will override parameters set by the configurations above if there is a conflict.
+# note that I am much less aware of what this part of the code does.
+misc_args:
+  # assumes image is single channel or multichannel nut channel of interest is ch0,
+  # needs be changed otherwise, e.g. 1 for channel 1
+  # right now, this is set to be the "None" type.
+  input_channel_of_interest:
+
+  input_normalization:
+    # yes, for some reason 'method' MUST include the entire string EXACTLY.
+    method: Rescaling (min-max normalization)
+    range: [0,1]
+    individual_channels: True
+
+    # set to 100 to get rid of cells having pixel area < 100 pixels
+    # leaving this empty is also an option.
+    filter: 100
+
+    # currently unsupported, will be in future versions according to doc.
+    hq_pred_options: Use all augs (pixel preserving + deteriorating) (Recommended for segmentation)
+
+#    post_process_algorithm: default
