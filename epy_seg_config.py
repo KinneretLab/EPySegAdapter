@@ -25,7 +25,7 @@ class EPySegConfig:
 
             self.pretraining_model = raw['pretraining_model']
             self.ta_output_mode = raw['ta_output_mode']
-            self.tile_height = raw['tile_length']
+            self.tile_height = raw['tile_height']
             self.tile_width = raw['tile_width']
             self.tile_overlap = raw['tile_overlap']
             self.refined_mode = raw['refined_mode']
@@ -33,10 +33,10 @@ class EPySegConfig:
             self.input_dir = self.to_absolute(work_dir, raw['input_dir'])
 
             # bad code on EPy-Seg's side forces this.
-            if self.misc_args['default_output_tile_width'] is None:
-                self.misc_args['default_output_tile_width'] = self.tile_width
-            if self.misc_args['default_output_tile_height'] is None:
-                self.misc_args['default_output_tile_height'] = self.tile_height
+            self.misc_args['default_output_tile_width'] = self.tile_width
+            self.misc_args['default_output_tile_height'] = self.tile_height
+
+            self.misc_args = {**self.misc_args, **raw['misc_args']}
 
     @staticmethod
     def to_absolute(work_dir: str, path: str) -> str:

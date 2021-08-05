@@ -36,7 +36,7 @@ tile_overlap: 32
 misc_args:
   # assumes image is single channel or multichannel nut channel of interest is ch0,
   # needs be changed otherwise, e.g. 1 for channel 1
-  # right now, this is set to be the "None" type.
+  # right now, this is set to be the "None" type by leaving it empty.
   input_channel_of_interest:
 
   input_normalization:
