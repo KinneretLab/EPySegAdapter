@@ -17,7 +17,7 @@ pretraining_model: Linknet-vgg16-sigmoid-v2
 
 # relative path from work directory where the input (the general output folder of CARE) may be found.
 # this is relative to the work directory.
-input_folder: CARE_ensemble/CARE_output
+input_dir: CARE_ensemble/CARE_output
 
 # whether or not to use the parent directory directly or a specific output folder ({input_folder}/predict)
 # official documentation:
@@ -45,11 +45,11 @@ misc_args:
     range: [0,1]
     individual_channels: True
 
-    # set to 100 to get rid of cells having pixel area < 100 pixels
-    # leaving this empty is also an option.
-    filter: 100
+  # set to 100 to get rid of cells having pixel area < 100 pixels
+  # leaving this empty is also an option.
+  filter: 100
 
-    # currently unsupported, will be in future versions according to doc.
-    hq_pred_options: Use all augs (pixel preserving + deteriorating) (Recommended for segmentation)
+  # currently unsupported, will be in future versions according to doc.
+  hq_pred_options: Use all augs (pixel preserving + deteriorating) (Recommended for segmentation)
 
-#    post_process_algorithm: default
+#  post_process_algorithm: default
