@@ -4,12 +4,13 @@
 of epithelial tissue. The [source code](https://github.com/baigouy/EPySeg), 
 with documentation, is available online.
 
-EPySeg was developed by the same people as Tissue Analyzer, 
-and consistently produces better results for cell segmentation 
+EPySeg was developed by the same people as Tissue Analyzer.
+The library consistently produces better results for cell segmentation 
 in our images than TA, even using just the default parameters 
-and model provided as part of the software. 
-The data format that is saved from EPySeg is compatible with further 
+and model bundled in the repository. 
+The data format saved from EPySeg is compatible with further 
 manual correction and post-processing in TA. 
+
 EPySeg can be run through a GUI, which is very clear and accessible, 
 but is then less convenient for running over multiple 
 folders or choices of parameters. 
@@ -104,6 +105,175 @@ and saved as a single image called
 
 ## Parameters
 
+All the parameters are stored in `cfg/config.yml`.
+We will describe each parameter and its application in this section.
+
+- **work_dir**:
+
+  *type*: `(absolute) path`
+
+  *default*: if not set, all other paths must be absolute.
+
+  The absolute path to the working directory.
+  While this does nothing alone, this parameter
+  sets a useful anchor for other path parameters.
+
+  You should change this value each time you change a dataset.
+
+- **refined_mode**:
+
+  *type*: `boolean`
+
+  *default*: `False`
+
+  Toggle between 'refined' mode and the 'raw' mode. 
+  Set to `True` to use the final (refined) mode.
+  Set to `False` to use the raw mode.
+  
+- **pretraining_model**:
+
+  *type*: `str`
+
+  *default*: None.
+
+  The name of the model to use in EPy-Seg.
+  We use `Linknet-vgg16-sigmoid-v2`, but there are other options
+  you can view at [epyseg.deeplearning.deepl.EZDeepLearning#pretrained_models_2D_epithelia](https://github.com/baigouy/EPySeg/blob/master/epyseg/deeplearning/deepl.py#L44).
+  
+- **input_dir**:
+
+  *type*: `path`
+
+  *default*: None.
+
+  relative path from work directory where the input 
+  (the general output folder of CARE) is placed.
+- **ta_output_mode**:
+
+  *type*: `boolean`
+
+  *default*: `True`
+
+  whether to use the parent directory 
+  directly or a specific 
+  output folder (`{input_folder}/predict`)
+  official documentation: 
+  > stores as 
+  `handCorrection.tif` in the folder with the 
+  same name as the parent file without extension.
+- **tile_width**:
+
+  *type*: `int`
+
+  *default*: `256`
+
+  the width of the segmentation frame.
+- **tile_height**:
+
+  *type*: `int`
+
+  *default*: `256`
+
+  the height of the segmentation frame
+- **tile_overlap**:
+
+  *type*: `int`
+
+  *default*: `32`
+
+  the step size (subtracted from tile width or height)
+  when moving the segmentation frame
+- **misc_args**:
+
+  *type*: `Dict[str,Any]`
+
+  Parameters placed here will be fed directly into epy-seg.
+  This allows you to feed arguments
+  without changing the config code at all.
+  
+  Values placed here override the parameters above if
+  there is a conflict.
+  You can read `cfg/config.yml` for documentation
+  of currently used misc. args, but note that
+  we are much less aware of their application.
+
 ## Technical Overview
 
+The code consists of two classes, each with a single responsibility:
+- `epy_seg_config.EpySegConfig` is responsible for
+  parsing the configuration file into usable and meaningful python variables.
+- `epy_seg.py` runs the EPy-Seg task.
+  It is mainly responsible for piping information
+  stored in the config class into the `epy_seg` object(s)
+
+Following is a useful graph describing the relationship between
+the core libraries of the program:
+
+![Relationship between Components](doc/class_graph.svg)
+
 ## Further Work
+
+### Adding new configurations
+To add a new configuration, there are two options:
+- You need to feed a special parameter directly
+- You want to add a configuration, but process it or use it 
+  outside of the EPySeg code.
+  
+If you are dealing with the former, life is easy:
+simply add the parameter name and value in the `misc_args`
+section of `cfg/config.yml`:
+```yaml
+misc_args:
+  my_param: my_value
+```
+
+
+However, the latter requires additional cod 
+to allow the program,
+specifically `EpySegConfig`, to read the corresponding parameter
+from `config.yml` and save it within itself.
+
+For example, let's say we want to add a parameter called `my_param`
+with a string value.
+
+1. Add it in the actual config file, for example:
+   ```yaml
+   my_param: my_value
+   ```
+2. Add the configuration in `EpySegConfig`. To do so,
+   add it with a basic value in the `__init__` function:
+   ```python
+   def __init__():
+       self.my_param: str = ''
+   ```
+3. Link the value in the config into the value in python using
+   `EpySegConfig#load()`. This method is responsible for
+   reading the yaml file (stored in `raw`) and put it in `self`.
+
+   You will need to add code to copy the value from `raw` to `self`
+   (and potentially more context sensitive stuff like append the work_dir path)
+
+   For instance:
+   ```python
+   def load(rel_path: str):
+       ...
+       self.my_param = raw['my_param']
+   ```
+
+   Finally, you can use `self.to_absolute(work_dir, <PATH>)`
+   to convert a path to a path potentially relative to the work directory.
+### Containerization
+
+The main problem with our current codebase
+is that different computers have different python environments.
+This can cause different bugs on different computers.
+The solution to this issue is to use a 'container' - a mini
+virtual computer built with exactly the environment we want,
+which exists only to perform the task at hand. It has all
+the environment ahead of time, so we don't need to spend time
+setting up the environment before running the task.
+
+We will use the [Docker Engine](https://docs.docker.com/engine/)
+to containerize this component (and the rest of the pipeline).
+We will also use GitLab's image service to store a pre-built
+environment of the target environment.

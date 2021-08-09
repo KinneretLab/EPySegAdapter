@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="272px" preserveAspectRatio="none" style="width:236px;height:272px;background:#FFFFFF;" version="1.1" viewBox="0 0 236 272" width="236px" zoomAndPan="magnify"><defs><filter height="300%" id="fsfoflcqvvfo6" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[53ccf4b3ee6cf4337a0ab93ac09644f3]
+entity main--><rect fill="#FEFECE" filter="url(#fsfoflcqvvfo6)" height="47.6094" style="stroke:#A80036;stroke-width:1.5;" width="94" x="84" y="7"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="158" y="12"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="156" y="14"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="156" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="54" x="99" y="41.5332">epy_seg</text><!--MD5=[6a88aea038141ee488e61f39bf1ca119]
+entity cfg--><rect fill="#FEFECE" filter="url(#fsfoflcqvvfo6)" height="47.6094" style="stroke:#A80036;stroke-width:1.5;" width="130" x="7" y="115"/><rect fill="#FEFECE" height="10" style="stroke:#A80036;stroke-width:1.5;" width="15" x="117" y="120"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="115" y="122"/><rect fill="#FEFECE" height="2" style="stroke:#A80036;stroke-width:1.5;" width="4" x="115" y="126"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="90" x="22" y="149.5332">EpySegConfig</text><!--MD5=[f37238dc75bc5d185960aec9cdff45d3]
+entity pd--><rect fill="#FEFECE" filter="url(#fsfoflcqvvfo6)" height="33.6094" style="stroke:#A80036;stroke-width:1.5;" width="65" x="159.5" y="227"/><rect fill="#FEFECE" height="33.6094" style="stroke:#A80036;stroke-width:1.5;" width="65" x="155.5" y="223"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="49" x="163.5" y="245.5332">EpySeg</text><!--MD5=[be6155fad3a4ee2585d9196117651dd6]
+entity yaml--><rect fill="#FEFECE" filter="url(#fsfoflcqvvfo6)" height="33.6094" style="stroke:#A80036;stroke-width:1.5;" width="69" x="39.5" y="227"/><rect fill="#FEFECE" height="33.6094" style="stroke:#A80036;stroke-width:1.5;" width="69" x="35.5" y="223"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="53" x="43.5" y="245.5332">PyYAML</text><!--MD5=[c0b92f35364e2330315179f30e23a4cd]
+link cfg to yaml--><path d="M72,163.17 C72,179.5 72,201.27 72,217.64 " fill="none" id="cfg-to-yaml" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="72,222.97,76,213.97,72,217.97,68,213.97,72,222.97" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[bf0cff962d57d8b323420d1a175b316b]
+link main to cfg--><path d="M118.2,55 C109.21,71.14 97.15,92.82 87.6,109.97 " fill="none" id="main-to-cfg" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="84.98,114.68,92.8474,108.7552,87.4082,110.3092,85.8542,104.87,84.98,114.68" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[60ab04dd06e0d8ec0b9923052ed1bfc3]
+link main to pd--><path d="M137.79,55.24 C142.63,71.87 149.27,94.8 155,115 C165.16,150.84 176.67,192.49 183.63,217.79 " fill="none" id="main-to-pd" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><polygon fill="#A80036" points="184.96,222.62,186.4486,212.8843,183.6432,217.7965,178.731,214.9912,184.96,222.62" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[4ad0592dfbc98525385fd89554b82e0d]
+@startuml
+
+[epy_seg] as main
+[EpySegConfig] as cfg
+collections EpySeg as pd
+collections PyYAML as yaml
+
+
+cfg ..> yaml
+
+main ..> cfg
+main ...> pd
+
+
+@enduml
+
+PlantUML version 1.2021.7(Sun May 23 15:40:07 IDT 2021)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: Cp1252
+Language: en
+Country: US
+--></g></svg>

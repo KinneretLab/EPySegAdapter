@@ -1,0 +1,15 @@
+@startuml
+
+[epy_seg] as main
+[EpySegConfig] as cfg
+collections EpySeg as pd
+collections PyYAML as yaml
+
+
+cfg ..> yaml
+
+main ..> cfg
+main ...> pd
+
+
+@enduml
