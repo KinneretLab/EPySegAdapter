@@ -9,7 +9,7 @@ work_dir: Z:/Analysis/users/Yonit/Movie_Analysis/Labeled_cells/SD1_2021_05_06_po
 # set to True if you are running the final segmentation to get the geometry
 # set to False if you are running the code to generate the ensemble
 # this will be changed often.
-refined_mode: True
+refined_mode: False
 
 # the pre-trained model to use on the data. Another option is 'Linknet-vgg16-sigmoid'
 # additional documentation available on `epyseg.deeplearning.deepl.EZDeepLearning.pretrained_models_2D_epithelia`

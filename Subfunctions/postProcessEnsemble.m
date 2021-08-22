@@ -1,38 +1,7 @@
-%% RunEnsembleInages
-clear all;
-addpath(genpath('\\phhydra\data-new\phkinnerets\Lab\CODE\Hydra\'));
-addpath(genpath('\\phhydra\phhydraB\Analysis\users\Yonit\MatlabCodes'));
-
-topDir = 'Z:\Analysis\users\Yonit\Movie_Analysis\Labeled_cells\SD1_2021_05_06_pos9\Cells\CARE_ensemble\'; % Top directory of all images that will be used for inference.
-maskDir = 'Z:\Analysis\users\Yonit\Movie_Analysis\Labeled_cells\SD1_2021_05_06_pos9\Display\Masks\'; % Mask directory.
-%% Part I - create ensemble images (look at ensembleImages function for further explanations and documentation.
-% If you want to create separate ensembles from multiple image sets, list
-% all directories from which you want to create ensembles, and give each a
-% name. Standard naming is the date and indication of folder from which
-% ensemble is created, e.g. '27July_E3' for EPySeg3, '27July_E5' for
-% EPySeg5.
-% Directories from which to create ensemble :
-dirList = {'\EPySegRaw\3','\EPySegRaw\5'};
-ensembleNameList = {'27July_E3','27July_E5'}; 
-mode = 'all'; %"mean", "var", "std" or "all" (default) - what type of images to save
-
-for i=1:length(dirList)
-    dirToImages = [topDir,dirList{i}];
-    ensembleName = ensembleNameList{i}; % Best to use date or other (short) informative name.
-    % Run function to create and save images:
-    ensembleImages (mode, dirToImages,topDir,ensembleName)
-end
-
-%% Part II - Post-processing all ensemble images
-% This includes multiplying by the image mask, normalising, and saving as
-% 16bit with .tif ending. Notice here that images are manipulated and
-% resaved, so original images will not be kept.
-
-resize = 0; % If you want to resize all images, set to desired pixel size (e.g. [1024, 1024];
-inverseFlags = {'EPySegRaw/4','EPySegRaw/5','EPySegRaw/7','27July_E5'}; % List of directories of inverse (light background) images. 
-% This is important so their mask is applied correctly and maintains a
-% light background. Make sure to include also folder of ensemble of inverse
-% images. 
+function [] = postProcessEnsemble(topDir,maskDir,inverseFlags,resize)
+% This function is used for post-processing ensemble images for the final
+% image infrerence NN. The steps include multiplication by image mask, and
+% image normalizatoin.
 
 % Create full list of images in topDir, and read all masks from maskDir:
 cd(topDir);
@@ -40,8 +9,7 @@ files = dir([topDir,'\**\*.tif*']);
 cd(maskDir);
 maskFiles = dir('*.tif*');
 allMasks =read3DstackDir(maskDir);
-length(files)
-
+disp(['number of files:',num2str(length(files))])
 % Run over all files and post-process according to image format and type
 % (normal vs. inverse)
 parfor i=1:length(files)
@@ -92,3 +60,5 @@ parfor i=1:length(files)
         imwrite(uint16(thisImMasked),[fileName,'.tif']); % save masked image
     end
 end
+end
+
