@@ -10,8 +10,9 @@ warning('off', 'MATLAB:MKDIR:DirectoryExists');% this supresses warning of exist
 % final image inference.
 % 3) Post processing of all ensemble images for final image inference.
 % NOTICE YOU NEED TO SET THE PARAMETERS FOR ALL THREE PARTS.
-topDir = 'Z:\Analysis\users\Yonit\Movie_Analysis\Labeled_cells\SD1_2021_05_06_pos9\Cells\CARE_ensemble\'; % Top directory of all images that will be used for inference.
-maskDir = 'Z:\Analysis\users\Yonit\Movie_Analysis\Labeled_cells\SD1_2021_05_06_pos9\Display\Masks\'; % Mask directory.
+workDir = 'Z:\Analysis\users\Yonit\Movie_Analysis\Labeled_cells\SD1_2021_05_06_pos9\Cells';
+topDir = [workDir,'\CARE_ensemble\']; % Top directory of all images that will be used for inference.
+maskDir = [workDir,'\..\Display\Masks']; % Mask directory.
 %% Parameters for rearrnagement:
 % When using EPySeg or Tissue Analyzer for automatic segmentation, it
 % outputs each segmented image renamed "epyseg_raw_predict.tif" or
