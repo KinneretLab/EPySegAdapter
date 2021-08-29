@@ -65,8 +65,13 @@ inverseFlags = {'EPySegRaw/4','EPySegRaw/5','EPySegRaw/7','19Aug_E5'}; % List of
 % light background. Make sure to include also folder of ensemble of inverse
 % images. 
 %% Rearrange images - run over folders, move and rename segmentation images.
-check = input('If you didnt change the directories below, please press 0 and do so. If you did change them according to your needs, please press 1: ');
+if ~batchStartupOptionUsed
+    check = input('If you didnt change the directories below, please press 0 and do so. If you did change them according to your needs, please press 1: ');
+else
+    check = 1;
+end
 if check ~=1 , disp('***Running session was stopped***'); return, end
+
 arrangeSegmentedImages(baseDir, NewBaseDir, sigmaVals,isRawEPySeg,planes);
 %% Run Ensemble Images
 for i=1:length(dirList)
