@@ -147,14 +147,26 @@ We will describe each parameter and its application in this section.
   We use `Linknet-vgg16-sigmoid-v2`, but there are other options
   you can view at [epyseg.deeplearning.deepl.EZDeepLearning#pretrained_models_2D_epithelia](https://github.com/baigouy/EPySeg/blob/master/epyseg/deeplearning/deepl.py#L44).
   
-- **input_dir**:
+- **raw_input_dir**:
 
   *type*: `path`
 
   *default*: None.
 
-  relative path from work directory where the input 
+  relative path from work directory where the input in raw mode
   (the general output folder of CARE) is placed.
+- **refined_input_dir**:
+
+  *type*: `path`
+
+  *default*: None.
+
+  relative path from work directory where the outputs of the 
+  final image can be found, used by the refined EPy-Seg.
+  If you use the direct parent of the output folder,
+  the program will search specifically for directories 
+  that do not contain child folders
+  and choose the one modified last.
 - **ta_output_mode**:
 
   *type*: `boolean`

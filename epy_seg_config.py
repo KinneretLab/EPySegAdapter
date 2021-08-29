@@ -1,4 +1,5 @@
 import os.path
+from pathlib import Path
 from typing import Dict, Hashable, Any
 
 import yaml
@@ -30,7 +31,10 @@ class EPySegConfig:
             self.tile_overlap = raw['tile_overlap']
             self.refined_mode = raw['refined_mode']
 
-            self.input_dir = self.to_absolute(work_dir, raw['input_dir'])
+            if self.refined_mode:
+                self.input_dir = self._get_refined_input_dir(self.to_absolute(work_dir, raw['refined_input_dir']))
+            else:
+                self.input_dir = self.to_absolute(work_dir, raw['raw_input_dir'])
 
             # bad code on EPy-Seg's side forces this.
             self.misc_args['default_output_tile_width'] = self.tile_width
@@ -47,3 +51,13 @@ class EPySegConfig:
         :return: an absolute path leading to the target specified by path.
         """
         return path if os.path.isabs(path) else work_dir + path
+
+    @staticmethod
+    def _get_refined_input_dir(path: str) -> str:
+        candidates = [candidate for candidate in Path(path).iterdir() if candidate.is_dir() and
+                      len([child for child in candidate.iterdir() if child.is_dir()]) == 0]
+        if len(candidates) == 0:
+            return path
+        else:
+            candidates.sort(key=lambda directory: directory.stat().st_mtime_ns)
+            return str(candidates[0])

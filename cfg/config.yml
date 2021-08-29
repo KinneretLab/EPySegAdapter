@@ -15,9 +15,15 @@ refined_mode: False
 # additional documentation available on `epyseg.deeplearning.deepl.EZDeepLearning.pretrained_models_2D_epithelia`
 pretraining_model: Linknet-vgg16-sigmoid-v2
 
-# relative path from work directory where the input (the general output folder of CARE) may be found.
+# relative path from work directory where the input in raw mode (the general output folder of CARE) may be found.
 # this is relative to the work directory.
-input_dir: CARE_ensemble/CARE_output
+raw_input_dir: CARE_ensemble/CARE_output
+
+# relative path from work directory where the outputs of the final image can be found.
+# if you use the direct parent of the output folder,
+# the program will search specifically for directories that do not contain child folders
+# and choose the one modified last.
+refined_input_dir: Inference
 
 # whether or not to use the parent directory directly or a specific output folder ({input_folder}/predict)
 # official documentation:
