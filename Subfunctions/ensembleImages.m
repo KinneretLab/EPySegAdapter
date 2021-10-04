@@ -59,7 +59,7 @@ function [] = ensembleImages (mode, dirToImages,topDir, resultDir)
         stdImageNormPre =       std(varTensorNorm,0,3);
               
          %% save the outcome
-        cd ([topDir,'\compData\ensembles\' ,resultDir])
+        cd ([topDir,'\ensembles\' ,resultDir])
         
         if mode == "all" || mode == "mean"
             mkdir([resultDir,'_mean']);

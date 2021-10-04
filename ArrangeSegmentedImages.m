@@ -33,7 +33,7 @@ maskDir = [workDir,'\..\Display\Masks']; % Mask directory.
 
 % carefully change the 2 directories below:
 baseDir =  [topDir,'\CARE_output\SS_model_sigma']; % Directories of current segmentation images
-NewBaseDir =  [topDir,'\EPySegRawTest\']; % New directory for segmentation images
+NewBaseDir =  [topDir,'\EPySegRaw\']; % New directory for segmentation images
 % Sigma values (or sub-names of folders) for different folders containing the
 % segmentation output that you would like to run over.
 sigmaVals = {'2_0','2_1','2_2','2_3','2_4','2_5','2_6','2_7','2_8','2_9','3_0'};
