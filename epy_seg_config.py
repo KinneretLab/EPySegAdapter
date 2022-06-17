@@ -1,6 +1,6 @@
 import os.path
 from pathlib import Path
-from typing import Dict, Hashable, Any
+from typing import Dict, Hashable, Any, Union
 
 import yaml
 
@@ -20,6 +20,7 @@ class EPySegConfig:
         self.tile_overlap: int = 32
         self.misc_args: Dict[Hashable, Any] = {}
         self.refined_mode: bool = False
+        self.model: Union[None, str] = None
 
     def load(self, rel_path: str) -> None:
         """
@@ -45,8 +46,10 @@ class EPySegConfig:
             # the input directory is a bit more clever, and changes based on whether we are in refined mode or not.
             if self.refined_mode:
                 self.input_dir = self._get_refined_input_dir(self.to_absolute(work_dir, raw['refined_input_dir']))
+                self.model = (None if raw['refined_model'] == '' else raw['refined_model']) if 'refined_model' in raw else None
             else:
                 self.input_dir = self.to_absolute(work_dir, raw['raw_input_dir'])
+                self.model = (None if raw['raw_model'] == '' else raw['raw_model']) if 'raw_model' in raw else None
 
             # bad code on EPy-Seg's side forces this.
             self.misc_args['default_output_tile_width'] = self.tile_width

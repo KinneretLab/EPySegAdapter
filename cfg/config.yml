@@ -15,6 +15,12 @@ refined_mode: False
 # additional documentation available on `epyseg.deeplearning.deepl.EZDeepLearning.pretrained_models_2D_epithelia`
 pretraining_model: Linknet-vgg16-sigmoid-v2
 
+# the path from the home directory of THIS PYTHON SCRIPT to the model file used to process the data
+# it is entirely valid to use an absolute path, but it is better to save the model along with the script that uses it.
+# This should really stay untouched since the model changes very infrequently.
+raw_model: models/Linknet-vgg16-sigmoid-pretrained_best_val_loss-raw.h5
+refined_model: models/Linknet-vgg16-sigmoid-pretrained_best_val_loss-refined.h5
+
 # relative path from work directory where the input in raw mode (the general output folder of CARE) may be found.
 # this is relative to the work directory.
 raw_input_dir: CARE_ensemble/CARE_output

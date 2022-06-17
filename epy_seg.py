@@ -57,7 +57,7 @@ def main() -> None:
         # raw code for predict
         deep_ta = EZDeepLearning()
         deep_ta.load_or_build(architecture='Linknet', backbone='vgg16', activation='sigmoid', classes=7,
-                              pretraining=cfg.pretraining_model)
+                              pretraining=cfg.pretraining_model, model=cfg.model)
 
         deep_ta.get_loaded_model_params()
         deep_ta.summary()
