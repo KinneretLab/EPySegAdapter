@@ -45,7 +45,7 @@ class EPySegConfig:
 
             # the input directory is a bit more clever, and changes based on whether we are in refined mode or not.
             if self.refined_mode:
-                self.input_dir = self._get_refined_input_dir(self.to_absolute(work_dir, raw['refined_input_dir']))
+                self.input_dir = self.to_absolute(work_dir, raw['refined_input_dir'])
                 self.model = (None if raw['refined_model'] == '' else raw['refined_model']) if 'refined_model' in raw else None
             else:
                 self.input_dir = self.to_absolute(work_dir, raw['raw_input_dir'])
@@ -66,16 +66,3 @@ class EPySegConfig:
         :return: an absolute path leading to the target specified by path.
         """
         return path if os.path.isabs(path) else work_dir + path
-
-    @staticmethod
-    def _get_refined_input_dir(path: str) -> str:
-        # Final image can generate the result in a sub-directory with a changing date.
-        # This lists all potential sub-directories and chooses the one created last.
-        # If not applicable, this returns the argument.
-        candidates = [candidate for candidate in Path(path).iterdir() if candidate.is_dir() and
-                      len([child for child in candidate.iterdir() if child.is_dir()]) == 0]
-        if len(candidates) == 0:
-            return path
-        else:
-            candidates.sort(key=lambda directory: directory.stat().st_mtime_ns)
-            return str(candidates[0])

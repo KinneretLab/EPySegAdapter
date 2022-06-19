@@ -1,3 +1,6 @@
+from pathlib import Path
+from typing import List
+
 import numpy as np
 import scipy.ndimage
 import tifffile
@@ -50,7 +53,8 @@ def main() -> None:
         print('\033[91mCould not load configuration file. Error: \033[0m' + str(e))
         return
 
-    for folder in os.listdir(cfg.input_dir):
+    dir_list = get_latest(cfg.input_dir) if cfg.refined_mode else os.listdir(cfg.input_dir)
+    for folder in dir_list:
         input_path = cfg.input_dir + '/' + folder
         # magic.
 
@@ -84,6 +88,19 @@ def main() -> None:
 
         if cfg.refined_mode:
             find_vertices(input_path)
+
+
+def get_latest(path: str) -> List[str]:
+    # Final image can generate the result in a sub-directory with a changing date.
+    # This lists all potential sub-directories and chooses the one created last.
+    # If not applicable, this returns the argument.
+    candidates = [candidate for candidate in Path(path).iterdir() if candidate.is_dir() and
+                  len([child for child in candidate.iterdir() if child.is_dir()]) == 0]
+    if len(candidates) == 0:
+        return [Path(path).name]
+    else:
+        candidates.sort(key=lambda directory: directory.stat().st_mtime_ns)
+        return [candidates[0].name]
 
 
 if __name__ == '__main__':
