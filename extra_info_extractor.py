@@ -8,7 +8,6 @@ from tifffile import tifffile
 class ExtraInfoExtractor:
     def __init__(self):
         self._img: np.ndarray = np.zeros(0)
-        self._bond_index: int = 0
         self._vertices: np.ndarray = np.zeros(0)
         self._bonds: np.ndarray = np.zeros(0)
         self._img_size: int = 0
@@ -18,7 +17,6 @@ class ExtraInfoExtractor:
         if self._img.ndim == 3:
             self._img = self._img[:, :, 1]
         self._img[self._img > 0] = 1  # turn image to binary
-        self._bond_index = 0
         self._img_size = len(self._img)
         self._vertices: np.ndarray = np.zeros(0)
         self._bonds: np.ndarray = np.zeros(0)
@@ -27,8 +25,8 @@ class ExtraInfoExtractor:
         mask = np.zeros((self._img_size, self._img_size)).astype(np.uint8)
         square_kernel = np.array([[0, 0, 0], [0, 1, 1], [0, 1, 1]])
         plus_kernel = [[0, 1, 0], [1, 1, 1], [0, 1, 0]]
-        for i in range(0, self._img_size):
-            for j in range(0, self._img_size):
+        for i in range(1, self._img_size - 1):
+            for j in range(1, self._img_size - 1):  # single pass, but do not go through image edges
                 if self._img[i, j] == 1:
                     # to check if a point is a vertex, we load its 3x3 pixel area and
                     # split the black pixels into groups.
@@ -45,16 +43,32 @@ class ExtraInfoExtractor:
         if len(self._vertices) != self._img_size:
             self.calc_vertices()
         self._bonds = np.tile(self._img * 255, [3, 1, 1])
-        self._bonds[:, 0, :] = self._bonds[:, :, 0] = 0
-        self._bonds[:, self._img_size - 1, :] = self._bonds[:, :, self._img_size - 1] = 0
-        for j in range(0, self._img_size):
-            for i in range(0, self._img_size):
-                if (self._bonds[:, i, j] == [255, 255, 255]).all() and not self._vertices[i, j] == 255:
-                    self._bond_index += 1
-                    self._infect(i, j, False)
+        j = 0
+        i = 0
+        infect_stack: List[Tuple[int, int, int, bool]] = []
+        bond_index = 0
+        while j != self._img_size:
+            while len(infect_stack) != 0:  # resolve infections
+                infect_data = infect_stack.pop()
+                if infect_data[0] == -1:
+                    bond_index -= 1
+                else:
+                    for new_infect in self._infect(infect_data[0], infect_data[1], infect_data[2], infect_data[3]):
+                        infect_stack.append(new_infect)
+            if (self._bonds[:, i, j] == [255, 255, 255]).all() and not self._vertices[i, j] == 255:
+                infect_stack.append((i, j, bond_index, False))
+                bond_index += 1
+            i += 1
+            if i == self._img_size:
+                i = 0
+                j += 1
+        while len(infect_stack) != 0:  # resolve infections for the last time
+            infect_data = infect_stack.pop()
+            for new_infect in self._infect(infect_data[0], infect_data[1], infect_data[2], infect_data[3]):
+                infect_stack.append(new_infect)
         return self._bonds
 
-    def _infect(self, i, j, infect_if_square) -> None:
+    def _infect(self, i, j, bond_index, infect_if_square) -> List[Tuple[int, int, int, bool]]:
         """
         infects a pixel, meaning it marks it with a particular ID to color, and colors
         white pixels that are part of the same bond with the same color (that are not vertices)
@@ -68,20 +82,20 @@ class ExtraInfoExtractor:
                             [[0, 1, 1], [0, 1, 1], [0, 0, 0]]])
         if ((squares * self._get_kernel(i, j)).sum(1).sum(1) == 4).any():
             if infect_if_square:
-                self._bonds[:, i, j] = [(self._bond_index >> 16) & 255,
-                                        (self._bond_index >> 8) & 255, self._bond_index & 255]
+                self._bonds[:, i, j] = [(bond_index >> 16) & 255,
+                                        (bond_index >> 8) & 255, bond_index & 255]
+                return []
             else:
-                self._bond_index -= 1
-            return
+                return [(-1, -1, -1, False)]
 
         # converts int to RGB
-        self._bonds[:, i, j] = [(self._bond_index >> 16) & 255, (self._bond_index >> 8) & 255, self._bond_index & 255]
+        self._bonds[:, i, j] = [(bond_index >> 16) & 255, (bond_index >> 8) & 255, bond_index & 255]
         # generate list of indices to test for infection
         ii, jj = np.meshgrid(np.linspace(i - 1, i + 1, 3).astype(np.int),
                              np.linspace(j - 1, j + 1, 3).astype(np.int))
         ii = ii.flatten()
         jj = jj.flatten()
-        neighbors: List[Tuple[int, int]] = [(ii[k], jj[k]) for k in range(9)]
+        neighbors: List[Tuple[int, int, int, bool]] = [(ii[k], jj[k], bond_index, True) for k in range(9)]
         # remove entries from list based on out-of-bounds
         neighbors = list(filter(lambda coord: 0 <= coord[0] < self._img_size and 0 <= coord[1] < self._img_size,
                                 neighbors))
@@ -89,7 +103,7 @@ class ExtraInfoExtractor:
         neighbors = list(filter(lambda coord: (self._bonds[:, coord[0], coord[1]] == [255, 255, 255]).all(), neighbors))
         # remove entries from list if there is a closer infect-able cell
         # Iteration on a tier 2 copy. It is a very bad idea to iterate on a list you are directly changing.
-        for ii, jj in neighbors[:]:
+        for ii, jj, _, _ in neighbors[:]:
             # ii and jj are no longer numpy stuff, but integers related to i,j (not relative though)
             # prevent infection of cells that are seperated by an infectable,
             # but close enough to be rendered in the kernel
@@ -100,9 +114,8 @@ class ExtraInfoExtractor:
             if self._vertices[ii, jj] == 255:
                 # vertices should not be infected
                 neighbors = list(filter(lambda coord: coord[0] != ii or coord[1] != jj, neighbors))
-        # infect remaining entries (should be 1 or 2)
-        for ii, jj in neighbors:
-            self._infect(ii, jj, True)
+        # return remaining infectable entries (should be 1 or 2)
+        return neighbors
 
     def _get_kernel(self, i, j) -> np.ndarray:
         kernel = np.zeros((3, 3))
