@@ -16,6 +16,7 @@ def extract_extra_info(input_path: str) -> None:
     :param input_path: the absolute path to the segmented image
     """
     extractor = ExtraInfoExtractor()
+    print("Extracting additional information into supplementary images...")
     for img_dir in os.listdir(input_path):
         if not os.path.isdir(input_path + "/" + img_dir):
             continue

@@ -9,7 +9,7 @@ work_dir: Z:/Analysis/users/Yonit/Movie_Analysis/Labeled_cells/SD1_2021_05_06_po
 # set to True if you are running the final segmentation to get the geometry
 # set to False if you are running the code to generate the ensemble
 # this will be changed often.
-refined_mode: False
+refined_mode: True
 
 # the pre-trained model to use on the data. Another option is 'Linknet-vgg16-sigmoid'
 # additional documentation available on `epyseg.deeplearning.deepl.EZDeepLearning.pretrained_models_2D_epithelia`
@@ -19,7 +19,7 @@ pretraining_model: Linknet-vgg16-sigmoid-v2
 # it is entirely valid to use an absolute path, but it is better to save the model along with the script that uses it.
 # This should really stay untouched since the model changes very infrequently.
 raw_model: models/Linknet-vgg16-sigmoid-pretrained_best_val_loss-raw.h5
-refined_model: models/Linknet-vgg16-sigmoid-pretrained_best_val_loss-refined.h5
+refined_model: models/Linknet-vgg16-sigmoid-pretrained_best_val_loss-direct.h5
 
 # relative path from work directory where the input in raw mode (the general output folder of CARE) may be found.
 # this is relative to the work directory.

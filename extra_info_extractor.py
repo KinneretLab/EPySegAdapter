@@ -65,8 +65,9 @@ class ExtraInfoExtractor:
                 j += 1
         while len(infect_stack) != 0:  # resolve infections for the last time
             infect_data = infect_stack.pop()
-            for new_infect in self._infect(infect_data[0], infect_data[1], infect_data[2], infect_data[3]):
-                infect_stack.append(new_infect)
+            if infect_data[0] != -1:
+                for new_infect in self._infect(infect_data[0], infect_data[1], infect_data[2], infect_data[3]):
+                    infect_stack.append(new_infect)
         return self._bonds
 
     def _infect(self, i, j, bond_index, infect_if_square) -> List[Tuple[int, int, int, bool]]:
