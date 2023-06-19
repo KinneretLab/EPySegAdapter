@@ -147,6 +147,32 @@ We will describe each parameter and its application in this section.
   We use `Linknet-vgg16-sigmoid-v2`, but there are other options
   you can view at [epyseg.deeplearning.deepl.EZDeepLearning#pretrained_models_2D_epithelia](https://github.com/baigouy/EPySeg/blob/master/epyseg/deeplearning/deepl.py#L44).
   
+- **raw_model**:
+
+  *type*: `path`
+
+  *default*: None.
+
+  the absolute or relative path from the home directory of this python script
+  to the model file used to process the data, 
+  in particular the first (raw) step that makes many initial guesses for the cell bonds
+  are are left for the next step to generate more options, then merge.
+  This should stay untouched since the model
+  changes very infrequently.
+
+- **refined_model**:
+
+  *type*: `path`
+
+  *default*: None.
+
+  the absolute or relative path from the home directory of this python script
+  to the model file used to process the data, 
+  in particular the final (or direct) step that makes the final guesses on
+  where the tissue bonds lie
+  This should stay untouched since the model
+  changes very infrequently.
+
 - **raw_input_dir**:
 
   *type*: `path`
