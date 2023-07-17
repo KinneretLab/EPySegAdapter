@@ -38,7 +38,7 @@ def main() -> None:
         print('\033[91mCould not load configuration file. Error: \033[0m' + str(e))
         return
 
-    dir_list = get_latest(cfg.input_dir) if cfg.refined_mode else os.listdir(cfg.input_dir)
+    dir_list = cfg.input_dir if cfg.refined_mode else os.listdir(cfg.input_dir)
     for folder in dir_list:
         input_path = cfg.input_dir + '/' + folder
         # magic.

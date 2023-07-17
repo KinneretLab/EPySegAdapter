@@ -29,7 +29,7 @@ raw_input_dir: CARE_ensemble/CARE_output
 # if you use the direct parent of the output folder,
 # the program will search specifically for directories that do not contain child folders
 # and choose the one modified last.
-refined_input_dir: Inference
+refined_input_dir: Segmentation
 
 # whether or not to use the parent directory directly or a specific output folder ({input_folder}/predict)
 # official documentation:
