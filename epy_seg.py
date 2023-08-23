@@ -38,10 +38,14 @@ def main() -> None:
         print('\033[91mCould not load configuration file. Error: \033[0m' + str(e))
         return
 
-    dir_list = cfg.input_dir if cfg.refined_mode else os.listdir(cfg.input_dir)
-    for folder in dir_list:
-        input_path = cfg.input_dir + '/' + folder
-        # magic.
+    # iterate over all the segmentation directories.
+    # In raw mode, there can be multiple input directories corresponding to the sigmas.
+    # in refined (or direct) mode, there is only one input directory, so the for loop is only of length 1
+    for input_path in [Path(cfg.input_dir)] if cfg.refined_mode else Path(cfg.input_dir).iterdir():
+        # ensure the file is indeed a directory
+        if not input_path.is_dir():
+            continue
+        input_path = str(input_path)
 
         # raw code for predict
         deep_ta = EZDeepLearning()
