@@ -22,6 +22,7 @@ def extract_extra_info(input_path: str) -> None:
             continue
         # load the segmented image
         extractor.register_image(input_path + "/" + img_dir + "/handCorrection.tif")
+        tifffile.imwrite(input_path + "/" + img_dir + "/handCorrection.tif", extractor.fix_segmentation())
         tifffile.imwrite(input_path + "/" + img_dir + "/vertices.tif", extractor.calc_vertices())
         tifffile.imwrite(input_path + "/" + img_dir + "/boundaryPlotter.tif", extractor.calc_bonds())
 

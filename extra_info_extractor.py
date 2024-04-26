@@ -11,16 +11,38 @@ class ExtraInfoExtractor:
         self._vertices: np.ndarray = np.zeros(0)
         self._bonds: np.ndarray = np.zeros(0)
         self._img_size: int = 0
+        self._dims: int = 1
 
     def register_image(self, full_img_path):
         self._img = tifffile.imread(full_img_path)
         if self._img.ndim == 3:
+            self._dims = 3
             self._img = self._img[:, :, 1]
         self._img[self._img > 0] = 1  # turn image to binary
         self._img_size = len(self._img)
         self._img[0, :] = self._img[:, 0] = self._img[:, self._img_size - 1] = self._img[self._img_size - 1, :] = 1
         self._vertices: np.ndarray = np.zeros(0)
         self._bonds: np.ndarray = np.zeros(0)
+
+    def fix_segmentation(self) -> np.ndarray:
+        diamond_kernel = [[0, 1, 0], [1, 0, 1], [0, 1, 0]]
+        mask = self._img
+        mask[0, :] = mask[:, 0] = mask[:, self._img_size - 1] = mask[self._img_size - 1, :] = 0
+        for i in range(1, self._img_size - 1):
+            for j in range(1, self._img_size - 1):  # single pass, but do not go through image edges
+                if mask[i, j] == 0:
+                    # to check if a point is a 1 pixel cell, we load its 3x3 pixel area,
+                    # multiply it by the diamond kernel and check if the diamond is fulfilled.
+                    # If it is, the pixel is filled.
+                    kernel = self._get_kernel(i, j)
+                    # take care of square vertices
+                    if (diamond_kernel * kernel).sum() == 4:
+                        self._img[i, j] = mask[i, j] = 1
+        ret = 255 * mask
+        if self._dims == 3:
+            return np.stack([ret, ret, ret])
+        else:
+            return ret
 
     def calc_vertices(self) -> np.ndarray:
         mask = np.zeros((self._img_size, self._img_size)).astype(np.uint8)
