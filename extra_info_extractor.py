@@ -39,6 +39,7 @@ class ExtraInfoExtractor:
                     if (diamond_kernel * kernel).sum() == 4:
                         self._img[i, j] = mask[i, j] = 1
         ret = 255 * mask
+        self._img[0, :] = self._img[:, 0] = self._img[:, self._img_size - 1] = self._img[self._img_size - 1, :] = 1
         if self._dims == 3:
             return np.stack([ret, ret, ret])
         else:
