@@ -17,7 +17,7 @@ class ExtraInfoExtractor:
         self._img = tifffile.imread(full_img_path)
         if self._img.ndim == 3:
             self._dims = 3
-            self._img = self._img[:, :, 1]
+            self._img = self._img[1, :, :]
         self._img[self._img > 0] = 1  # turn image to binary
         self._img_size = len(self._img)
         self._img[0, :] = self._img[:, 0] = self._img[:, self._img_size - 1] = self._img[self._img_size - 1, :] = 1
@@ -116,8 +116,8 @@ class ExtraInfoExtractor:
         # converts int to RGB
         self._bonds[:, i, j] = [(bond_index >> 16) & 255, (bond_index >> 8) & 255, bond_index & 255]
         # generate list of indices to test for infection
-        ii, jj = np.meshgrid(np.linspace(i - 1, i + 1, 3).astype(np.int),
-                             np.linspace(j - 1, j + 1, 3).astype(np.int))
+        ii, jj = np.meshgrid(np.linspace(i - 1, i + 1, 3).astype(np.int16),
+                             np.linspace(j - 1, j + 1, 3).astype(np.int16))
         ii = ii.flatten()
         jj = jj.flatten()
         neighbors: List[Tuple[int, int, int, bool]] = [(ii[k], jj[k], bond_index, True) for k in range(9)]

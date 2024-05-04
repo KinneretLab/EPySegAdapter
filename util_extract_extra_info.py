@@ -17,9 +17,6 @@ if __name__ == '__main__':
         print(input_path)
         i = 0
         for img_dir in os.listdir(input_path):
-            if i == 0:
-                i += 1
-                continue
             if not os.path.isdir(input_path + "/" + img_dir):
                 continue
             # load the segmented image
