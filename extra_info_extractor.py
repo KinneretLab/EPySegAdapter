@@ -17,7 +17,10 @@ class ExtraInfoExtractor:
         self._img = tifffile.imread(full_img_path)
         if self._img.ndim == 3:
             self._dims = 3
-            self._img = self._img[1, :, :]
+            if self._img.shape[0] == 3:
+                self._img = self._img[0, :, :]
+            else:
+                self._img = self._img[:, :, 0]
         self._img[self._img > 0] = 1  # turn image to binary
         self._img_size = len(self._img)
         self._img[0, :] = self._img[:, 0] = self._img[:, self._img_size - 1] = self._img[self._img_size - 1, :] = 1
