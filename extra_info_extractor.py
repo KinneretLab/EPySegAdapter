@@ -22,7 +22,7 @@ class ExtraInfoExtractor:
             else:
                 self._img = self._img[:, :, 0]
         self._img[self._img > 0] = 1  # turn image to binary
-        self._img_size = len(self._img)
+        self._img_size = max(self._img.shape)
         self._img[0, :] = self._img[:, 0] = self._img[:, self._img_size - 1] = self._img[self._img_size - 1, :] = 1
         self._vertices: np.ndarray = np.zeros(0)
         self._bonds: np.ndarray = np.zeros(0)
