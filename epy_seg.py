@@ -53,9 +53,6 @@ def main() -> None:
         deep_ta.load_or_build(architecture='Linknet', backbone='vgg16', activation='sigmoid', classes=7,
                               pretraining=cfg.pretraining_model, model=cfg.model)
 
-        deep_ta.get_loaded_model_params()
-        deep_ta.summary()
-
         input_shape = deep_ta.get_inputs_shape()
         output_shape = deep_ta.get_outputs_shape()
 
